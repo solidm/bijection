@@ -25,7 +25,7 @@ import org.scalatest.prop.PropertyChecks
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Arbitrary
 
-import org.codehaus.jackson.JsonNode
+import com.fasterxml.jackson.databind.JsonNode
 import com.twitter.bijection.json.JsonNodeInjection.{ fromJsonNode, toJsonNode }
 import scala.util.Try
 

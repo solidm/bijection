@@ -12,7 +12,7 @@ import org.apache.thrift.protocol.{
   TSimpleJSONProtocol
 }
 import org.apache.thrift.transport.TIOStreamTransport
-import org.codehaus.jackson.map.MappingJsonFactory
+import com.fasterxml.jackson.databind.MappingJsonFactory
 import java.lang.{ Integer => JInt }
 import scala.collection.mutable.{ Map => MMap }
 import scala.util.{ Failure, Success }

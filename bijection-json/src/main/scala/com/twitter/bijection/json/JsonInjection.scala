@@ -18,9 +18,9 @@ package com.twitter.bijection.json
 
 import com.twitter.bijection.{ Bijection, Injection, InversionFailure, ImplicitBijection }
 import com.twitter.bijection.Inversion.{ attempt, attemptWhen }
-import org.codehaus.jackson.{ JsonParser, JsonNode, JsonFactory }
-import org.codehaus.jackson.map.ObjectMapper
-import org.codehaus.jackson.node.{
+import com.fasterxml.jackson.databind.{ JsonNode, ObjectMapper }
+import com.fasterxml.jackson.core.{ JsonFactory, JsonParser }
+import com.fasterxml.jackson.databind.node.{
   BooleanNode,
   IntNode,
   JsonNodeFactory,
@@ -109,7 +109,7 @@ object JsonNodeInjection extends LowPriorityJson with java.io.Serializable {
   }
   implicit val byteArray = new AbstractJsonNodeInjection[Array[Byte]] {
     def apply(b: Array[Byte]) = JsonNodeFactory.instance.binaryNode(b)
-    override def invert(n: JsonNode) = attempt(n)(_.getBinaryValue)
+    override def invert(n: JsonNode) = attempt(n)(_.binaryValue)
   }
   implicit def either[L: JsonNodeInjection, R: JsonNodeInjection] = new AbstractJsonNodeInjection[Either[L, R]] {
     def apply(e: Either[L, R]) = e match {
@@ -137,7 +137,7 @@ object JsonNodeInjection extends LowPriorityJson with java.io.Serializable {
       override def invert(n: JsonNode): Try[C] = {
         val builder = cbf()
         var inCount = 0
-        n.getElements.asScala.foreach { jn =>
+        n.elements.asScala.foreach { jn =>
           inCount += 1
           val thisC = jbij.invert(jn)
           if (thisC.isFailure) {
@@ -171,7 +171,7 @@ object JsonNodeInjection extends LowPriorityJson with java.io.Serializable {
         val obj = JsonNodeFactory.instance.objectNode
         m.foreach {
           case (k, v) =>
-            obj.put(k, toJsonNode(v))
+            obj.set(k, toJsonNode(v))
         }
         obj
       }
@@ -179,7 +179,7 @@ object JsonNodeInjection extends LowPriorityJson with java.io.Serializable {
         val builder = Map.newBuilder[String, V]
         builder.clear
         var cnt = 0
-        n.getFields.asScala.foreach { kv =>
+        n.fields.asScala.foreach { kv =>
           val value = fromJsonNode[V](kv.getValue)
           if (value.isSuccess) {
             cnt += 1
@@ -203,7 +203,7 @@ object JsonNodeInjection extends LowPriorityJson with java.io.Serializable {
       }
       override def invert(n: JsonNode) = {
         val writer = new java.io.StringWriter()
-        val gen = factory.createJsonGenerator(writer)
+        val gen = factory.createGenerator(writer)
         mapper.writeTree(gen, n)
         Success(UnparsedJson(writer.toString))
       }

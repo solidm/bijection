@@ -20,7 +20,7 @@ import com.twitter.bijection.{ Bijection, AbstractBijection, AbstractInjection, 
 import com.twitter.bijection.Inversion.attempt
 import JsonNodeInjection.{ fromJsonNode, toJsonNode }
 
-import org.codehaus.jackson.JsonNode
+import com.fasterxml.jackson.databind.JsonNode
 
 /**
  * Value class representing unparsed Json text
